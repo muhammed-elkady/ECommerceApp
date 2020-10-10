@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
+using ECommerceApp.Core.Interfaces;
 using ECommerceApp.Infrastructure;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -14,23 +15,23 @@ namespace ECommerceApp.Api.Controllers
     [ApiController]
     public class ProductsController : ControllerBase
     {
-        private readonly StoreContext _context;
+        private readonly IProductRepository _repo;
 
-        public ProductsController(StoreContext context)
+        public ProductsController(IProductRepository repo)
         {
-            _context = context;
+            _repo = repo;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetProducts()
         {
-            return Ok(await _context.Products.ToListAsync());
+            return Ok(await _repo.GetProductsAsync());
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetProductById(int id)
         {
-            return Ok(await _context.Products.FindAsync(id));
+            return Ok(await _repo.GetProductByIdAsync(id));
         }
     }
 }

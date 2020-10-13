@@ -18,7 +18,7 @@ namespace ECommerceApp
         {
             var host = CreateHostBuilder(args).Build();
 
-            #region Running any migrations before the application starts
+            #region Running any migrations and seed data before the application starts
 
             using (var scope = host.Services.CreateScope())
             {
@@ -29,6 +29,7 @@ namespace ECommerceApp
                 {
                     var context = services.GetRequiredService<StoreContext>();
                     await context.Database.MigrateAsync();
+                    await StoreContextSeed.SeedAsync(context, loggerFactory);
                 }
                 catch (Exception ex)
                 {
@@ -36,7 +37,7 @@ namespace ECommerceApp
                     logger.LogError(ex, "Error happened during migration!!!");
                 }
 
-            } 
+            }
             #endregion
 
             host.Run();

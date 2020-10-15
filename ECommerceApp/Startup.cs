@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using ECommerceApp.Api.Helpers;
 using ECommerceApp.Core.Interfaces;
 using ECommerceApp.Infrastructure;
 using ECommerceApp.Infrastructure.Repositories;
@@ -36,6 +38,7 @@ namespace ECommerceApp
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
+            services.AddAutoMapper(typeof(MappingProfiles));
             services.AddControllers();
             services.AddDbContext<StoreContext>(x => x.UseSqlServer(_config.GetConnectionString("DefaultConnection")));
         }

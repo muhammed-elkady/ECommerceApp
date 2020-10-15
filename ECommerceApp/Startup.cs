@@ -55,6 +55,8 @@ namespace ECommerceApp
 
             app.UseRouting();
 
+            app.UseStaticFiles();
+
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

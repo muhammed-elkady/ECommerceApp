@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using ECommerceApp.Api.Errors;
 using ECommerceApp.Api.Helpers;
+using ECommerceApp.Api.Middleware;
 using ECommerceApp.Core.Interfaces;
 using ECommerceApp.Infrastructure;
 using ECommerceApp.Infrastructure.Repositories;
@@ -40,16 +42,29 @@ namespace ECommerceApp
 
             services.AddAutoMapper(typeof(MappingProfiles));
             services.AddControllers();
+            services.Configure<ApiBehaviorOptions>(options =>
+            {
+                options.InvalidModelStateResponseFactory = actionContext =>
+                {
+                    var errors = actionContext.ModelState
+                    .Where(e => e.Value.Errors.Count > 0)
+                    .SelectMany(x => x.Value.Errors)
+                    .Select(x => x.ErrorMessage).ToArray();
+                    var errorResponse = new ApiValidationErrorResponse
+                    { Errors = errors };
+                    return new BadRequestObjectResult(errorResponse);
+                };
+            });
+
             services.AddDbContext<StoreContext>(x => x.UseSqlServer(_config.GetConnectionString("DefaultConnection")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
+            app.UseMiddleware<ExceptionMiddleware>();
+
+            app.UseStatusCodePagesWithReExecute("/errors/{0}");
 
             app.UseHttpsRedirection();
 

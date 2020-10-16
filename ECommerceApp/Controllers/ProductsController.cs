@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using AutoMapper;
+using ECommerceApp.Api.Errors;
 using ECommerceApp.Core.Dtos;
 using ECommerceApp.Core.Entities;
 using ECommerceApp.Core.Interfaces;
@@ -44,9 +45,16 @@ namespace ECommerceApp.Api.Controllers
         }
 
         [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetProductById(int id)
         {
             var product = await _productRepo.GetEntityWithSpec(new ProductsWithTypesAndBrandsSpecification(id));
+
+            if (product == null)
+            {
+                return NotFound(new ApiResponse(404));
+            }
             var productDto = _mapper.Map<Product, ProductToReturnDto>(product);
             return Ok(productDto);
         }

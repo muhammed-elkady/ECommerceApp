@@ -40,7 +40,7 @@ namespace ECommerceApp.Infrastructure.Repositories
 
         private IQueryable<T> ApplySpecification(ISpecification<T> specification)
         {
-            return SpecificationEvaluator<T>.GetQuery(_context.Set<T>().AsQueryable(), specification);
+            return SpecificationApplier<T>.GetQuery(_context.Set<T>().AsQueryable(), specification);
         }
     }
 }

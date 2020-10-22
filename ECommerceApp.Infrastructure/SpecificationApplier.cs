@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace ECommerceApp.Infrastructure
 {
-    public class SpecificationEvaluator<TEntity> where TEntity : BaseEntity
+    public class SpecificationApplier<TEntity> where TEntity : BaseEntity
     {
         public static IQueryable<TEntity> GetQuery(IQueryable<TEntity> inputQuery, ISpecification<TEntity> spec)
         {
@@ -14,6 +14,21 @@ namespace ECommerceApp.Infrastructure
             if (spec.Criteria != null)
             {
                 query = query.Where(spec.Criteria);
+            }
+
+            if (spec.OrderBy != null)
+            {
+                query = query.OrderBy(spec.OrderBy);
+            }
+
+            if (spec.OrderByDesc != null)
+            {
+                query = query.OrderByDescending(spec.OrderByDesc);
+            }
+
+            if (spec.IsPagingEnabled)
+            {
+                query = query.Skip(spec.Skip).Take(spec.Take);
             }
 
             query = spec.Includes.Aggregate(query, (current, includeStatement) => current.Include(includeStatement));

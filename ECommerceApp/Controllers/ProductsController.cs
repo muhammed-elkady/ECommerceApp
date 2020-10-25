@@ -5,6 +5,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using AutoMapper;
 using ECommerceApp.Api.Errors;
+using ECommerceApp.Api.Helpers;
 using ECommerceApp.Core.Dtos;
 using ECommerceApp.Core.Entities;
 using ECommerceApp.Core.Interfaces;
@@ -36,12 +37,15 @@ namespace ECommerceApp.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetProducts([FromQuery] ProductParams productParams)
+        public async Task<ActionResult<Pagination<ProductToReturnDto>>> GetProducts([FromQuery] ProductParams productParams)
         {
             var spec = new ProductsWithTypesAndBrandsSpecification(productParams);
+            var countSpec = new ProductWithFiltersForCountSpecification(productParams);
+            var totalItems = await _productRepo.CountAsync(countSpec);
             var products = await _productRepo.GetAllWithSpecAsync(spec);
             var productsDtos = _mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductToReturnDto>>(products);
-            return Ok(productsDtos);
+            var paginatedDtos = new Pagination<ProductToReturnDto>(productParams.PageIndex, productParams.PageSize, totalItems, productsDtos);
+            return Ok(paginatedDtos);
         }
 
         [HttpGet("{id}")]

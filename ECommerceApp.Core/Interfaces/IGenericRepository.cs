@@ -13,5 +13,7 @@ namespace ECommerceApp.Core.Interfaces
         public Task<IReadOnlyList<T>> GetAllAsync();
         Task<T> GetEntityWithSpec(ISpecification<T> specification);
         Task<IReadOnlyList<T>> GetAllWithSpecAsync(ISpecification<T> specification);
+        Task<int> CountAsync(ISpecification<T> spec);
+
     }
 }

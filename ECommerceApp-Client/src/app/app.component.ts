@@ -7,7 +7,6 @@ import { Product } from './shared/models/product';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  title = 'ECommerce App';
 
   constructor() {
   }

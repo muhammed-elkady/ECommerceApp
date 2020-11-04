@@ -12,7 +12,7 @@ import { ShopParams } from '../shared/models/ShopParams';
 })
 export class ShopService {
 
-  baseUrl = 'https://localhost:44375/api/';
+  private baseUrl = 'https://localhost:44375/api/';
 
   constructor(private http: HttpClient) { }
 
@@ -42,6 +42,9 @@ export class ShopService {
       )
   }
 
+  getProduct(id: number) {
+    return this.http.get<Product>(this.baseUrl + 'products/' + id)
+  }
 
   getBrands() {
     return this.http.get<Brand[]>(this.baseUrl + 'products/brands')

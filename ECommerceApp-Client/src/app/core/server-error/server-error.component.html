@@ -1,3 +1,14 @@
 <div class="container mt-5">
-    <h1>Internal Server Error</h1>
+    <h4>Internal Server Error - don't refresh the page, exception will disappear</h4>
+    <ng-container *ngIf="error">
+
+        <h5 class="text-danger">Error: {{error.message}}</h5>
+        <p class="font-weight-bold">Note: it's a server side error</p>
+
+        <h5>Stack Trace: </h5>
+        <code class="mt-5" style="background-color:whitesmoke;">
+            {{error.details}}
+        </code>
+        
+    </ng-container>
 </div>

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using ECommerceApp.Api.Errors;
@@ -10,10 +7,8 @@ using ECommerceApp.Core.Dtos;
 using ECommerceApp.Core.Entities;
 using ECommerceApp.Core.Interfaces;
 using ECommerceApp.Core.Specifications;
-using ECommerceApp.Infrastructure;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace ECommerceApp.Api.Controllers
 {

@@ -14,7 +14,7 @@ namespace ECommerceApp.Api.Extensions
             // User defined services
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-
+            services.AddScoped<IBasketRepository, BasketRepository>();
 
             // Configure ApiController errors modelstate to return type of ApiValidationErrorResponse
             services.Configure<ApiBehaviorOptions>(options =>

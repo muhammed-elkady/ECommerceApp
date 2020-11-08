@@ -1,24 +1,42 @@
 ﻿using ECommerceApp.Core.Entities;
 using ECommerceApp.Core.Interfaces;
+using StackExchange.Redis;
+using System;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace ECommerceApp.Infrastructure.Repositories
 {
     public class BasketRepository : IBasketRepository
     {
-        public Task<CustomerBasket> GetBasketAsync(string basketId)
+        private readonly IDatabase _database;
+
+        public BasketRepository(IConnectionMultiplexer redis)
         {
-            throw new System.NotImplementedException();
+            _database = redis.GetDatabase();
+        }
+        public async Task<CustomerBasket> GetBasketAsync(string basketId)
+        {
+            var data = await _database.StringGetAsync(basketId);
+            return data.IsNullOrEmpty ? null :
+                JsonSerializer.Deserialize<CustomerBasket>(data);
         }
 
-        public Task<CustomerBasket> UpdateBasketAsync(CustomerBasket basket)
+        public async Task<CustomerBasket> CreateOrUpdateBasketAsync(CustomerBasket basket)
         {
-            throw new System.NotImplementedException();
+            var isCreated = await _database.StringSetAsync(basket.Id,
+                JsonSerializer.Serialize(basket),
+                TimeSpan.FromDays(30));
+
+            if (!isCreated)
+                return null;
+
+            return await GetBasketAsync(basket.Id);
         }
 
-        public Task<bool> DeleteBasketAsync(string basketId)
+        public async Task<bool> DeleteBasketAsync(string basketId)
         {
-            throw new System.NotImplementedException();
+            return await _database.KeyDeleteAsync(basketId);
         }
     }
 }
